@@ -24,9 +24,20 @@ def main():
 
     # for key, value in map_by_length.items():
     #     print(key, " : ", value)
+def update_map(decode, text, p):
+    pass
+def decoding():
+    pass
+def solve_decrypt(text, decoded_str, decode, index):
+    pass
 
-def possible_solutions(text: str):
-    print("hello")
+def possible_solutions(text):
+    current_length_list = map_by_length.get(len(text.get(0)));
+    for t in current_length_list:
+        decode = decoding()
+        if(update_map(decode, text.get(0), t)):
+            solve_decrypt(text, t, decode, 1)
+
 #dictionary to search by length
 def make_dictionary():
     for d in dictionary:
