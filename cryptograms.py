@@ -14,14 +14,19 @@ decrypted_str = []
 alphabet = "abcdefghijklmnopqrstuvwxyz"
 
 def main():
-    # encrypt_input = input("Enter your encrypted text: ")
-    # encrypt_input = encrypt_input.split(" ")
-
+    encrypt_input = input("Enter your encrypted text: ")
+    encrypt_input = encrypt_input.split(" ")
+    
     #build the dictionary
     make_dictionary()
-    for key, value in map_by_length.items():
-        print(key, " : ", value)
+    #solve encrypted text
+    possible_solutions(encrypt_input)
 
+    # for key, value in map_by_length.items():
+    #     print(key, " : ", value)
+
+def possible_solutions(text: str):
+    print("hello")
 #dictionary to search by length
 def make_dictionary():
     for d in dictionary:
