@@ -13,6 +13,8 @@ map_by_length = dict()
 decrypted_str = []
 #alphabet
 alphabet = "abcdefghijklmnopqrstuvwxyz"
+#input
+encrypt_input = ""
 
 def main():
     encrypt_input = input("Enter your encrypted text: ")
@@ -45,7 +47,22 @@ def decoding():
     return character_map
 
 def solve_decrypt(text, decoded_str, decode, index):
-    pass
+    matching = False
+
+    if (len(encrypt_input) == len(decoded_str)):
+        decrypted_str.append(decoded_str)
+        matching = True
+    else:
+        same_length = map_by_length.get(len(text.get(index)))
+        for same in same_length:
+            new_decode = decoding()
+            new_decode.update(decode)
+
+            if(update_map(new_decode, text.get(index), same)):
+                update_decrypted_str = decrypted_str + " " + same
+                solve_decrypt(text, update_decrypted_str, new_decode, index+1)
+    return matching
+
 
 def possible_solutions(text):
     current_length_list = map_by_length.get(len(text[0]));
