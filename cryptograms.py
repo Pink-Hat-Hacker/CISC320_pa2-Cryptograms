@@ -1,4 +1,4 @@
-import sys
+# import sys
 
 #open file in dictionary
 filename = 'dictionary.txt'
@@ -6,27 +6,40 @@ file_open = open(filename)
 dictionary = file_open.read().split('\n')
 file_open.close()
 
-#map by length dictionary
-map_by_length = dict()
-#alphabet
-alphabet = "abcdefghijklmnopqrstuvwxyz"
-#input
-#encrypt_input = ""
-#all solutions found?
-finished = False
+encrypt_input = ""
 
-def main():
-    # encrypt_input = input("Enter your encrypted text: ")
-    # encrypt_input = encrypt_input.split(" ")
-    
-    #build the dictionary
-    make_dictionary()
+import sys
+from pathlib import Path
 
-    for key, value in map_by_length.items():
-        print(key, " : ", value)
+def is_good_cipher(decoded, encoded):
+    """Check if the decoded string is valid.
+    Create a map for each indexed position. A valid decoding must be a one-to-one mapping.
+    """
+    cipher_map = {}
+    for (enc, dec) in zip(encoded, decoded):
+        if enc not in cipher_map:
+            cipher_map[enc] = dec
+        elif cipher_map[enc] != dec:
+            return False
+    if len(set(decoded)) != len(set(encoded)):
+        return False
+    return True
 
-#dictionary to search by length
+def backtracking(full_dict, possible_words, user_encrypted, index, final):
+    #backtracking based on Silber slides [ppt L21]
+    final = []
+    for word in full_dict[len(user_encrypted[index])]:
+        encoded = " ".join(user_encrypted[: index + 1])
+        decoded = " ".join(possible_words + [word])
+        if is_good_cipher(encoded, decoded):
+            if index + 1 == len(user_encrypted):
+                final.append(decoded)
+            else:
+                final.extend(backtracking(full_dict, possible_words + [word], user_encrypted, index+1, final))
+    return final
+
 def make_dictionary():
+    map_by_length = {}
     for d in dictionary:
         key = len(d)
         if key in map_by_length:
@@ -35,29 +48,22 @@ def make_dictionary():
             new_list = []
             new_list.append(d)
             map_by_length[key] = new_list
+    return map_by_length
 
-def backtrack(a, k, input):
-    c = []
-    num_c = 0
-    counter = 0
+def main():
+    # Make dictionary
+    new_dictionary = make_dictionary()
+    #user encrypted text input
+    encrypt_input = input("Enter your encrypted text: ")
+    encrypt_input = encrypt_input.split(" ")
+    #start sub solving
+    results = backtracking(new_dictionary, [], encrypt_input, 0, [])
+    
+    #print the results
+    print(len(results))
+    for res in results:
+        print(res)
 
-    if(is_solution(a, k, input)):
-        process_solutions(a, k, input)
-    else:
-        k += 1
-        construct_c(a, k, input, c, num_c)
-        for counter in num_c:
-            a[k] = c[counter]
-            backtrack(a, k, input)
-            if finished:
-                break
 
-def is_solution(a, k, input):
-    pass
-def construct_c(a, k, input, c, num_c):
-    pass
-def process_solutions(a, k):
-    pass
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
