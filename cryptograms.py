@@ -1,4 +1,4 @@
-# import sys
+import sys
 
 #open file in dictionary
 filename = 'dictionary.txt'
@@ -8,36 +8,35 @@ file_open.close()
 
 encrypt_input = ""
 
-import sys
-from pathlib import Path
-
-def is_good_cipher(decoded, encoded):
-    """Check if the decoded string is valid.
-    Create a map for each indexed position. A valid decoding must be a one-to-one mapping.
-    """
-    cipher_map = {}
-    for (enc, dec) in zip(encoded, decoded):
-        if enc not in cipher_map:
-            cipher_map[enc] = dec
-        elif cipher_map[enc] != dec:
+def simple_sub_checker(encrypt_str, decrypt_str):
+    sub_dict = {}
+    for (e, d) in zip(encrypt_str, decrypt_str):
+        if e not in sub_dict:
+            sub_dict[e] = d
+        if sub_dict[e] != d:
             return False
-    if len(set(decoded)) != len(set(encoded)):
+    e_len = len(set(encrypt_str))
+    d_len = len(set(decrypt_str))
+    if e_len != d_len:
         return False
     return True
 
+#backtracking based on Silber slides [ppt L21]
 def backtracking(full_dict, possible_words, user_encrypted, index, final):
-    #backtracking based on Silber slides [ppt L21]
     final = []
-    for word in full_dict[len(user_encrypted[index])]:
-        encoded = " ".join(user_encrypted[: index + 1])
-        decoded = " ".join(possible_words + [word])
-        if is_good_cipher(encoded, decoded):
-            if index + 1 == len(user_encrypted):
-                final.append(decoded)
+    for value in full_dict[len(user_encrypted[index])]:
+        encrypt_str = " ".join(user_encrypted[:index + 1])
+        decrypt_str = " ".join(possible_words + [value])
+        #candidates
+        if simple_sub_checker(encrypt_str, decrypt_str):
+            if (index + 1 == len(user_encrypted)):
+                final.append(decrypt_str)
             else:
-                final.extend(backtracking(full_dict, possible_words + [word], user_encrypted, index+1, final))
+                #recure
+                final.extend(backtracking(full_dict, possible_words + [value], user_encrypted, index + 1, final))
     return final
 
+#create a dictionary sorted by length 
 def make_dictionary():
     map_by_length = {}
     for d in dictionary:
@@ -57,12 +56,13 @@ def main():
     encrypt_input = input("Enter your encrypted text: ")
     encrypt_input = encrypt_input.split(" ")
     #start sub solving
-    results = backtracking(new_dictionary, [], encrypt_input, 0, [])
+    candidates = []
+    solutions = backtracking(new_dictionary, candidates, encrypt_input, 0, [])
     
     #print the results
-    print(len(results))
-    for res in results:
-        print(res)
+    print(len(solutions))
+    for s in solutions:
+        print(s)
 
 
 if __name__ == "__main__":
