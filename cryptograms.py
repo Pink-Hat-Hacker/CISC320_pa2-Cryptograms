@@ -8,33 +8,20 @@ file_open.close()
 
 encrypt_input = ""
 
-def simple_sub_checker(encrypt_str, decrypt_str):
-    sub_dict = {}
-    for (e, d) in zip(encrypt_str, decrypt_str):
-        if e not in sub_dict:
-            sub_dict[e] = d
-        if sub_dict[e] != d:
-            return False
-    e_len = len(set(encrypt_str))
-    d_len = len(set(decrypt_str))
-    if e_len != d_len:
-        return False
-    return True
-
-#backtracking based on Silber slides [ppt L21]
-def backtracking(full_dict, possible_words, user_encrypted, index, final):
-    final = []
-    for value in full_dict[len(user_encrypted[index])]:
-        encrypt_str = " ".join(user_encrypted[:index + 1])
-        decrypt_str = " ".join(possible_words + [value])
-        #candidates
-        if simple_sub_checker(encrypt_str, decrypt_str):
-            if (index + 1 == len(user_encrypted)):
-                final.append(decrypt_str)
-            else:
-                #recure
-                final.extend(backtracking(full_dict, possible_words + [value], user_encrypted, index + 1, final))
-    return final
+def decrypt(input):
+    new_dictionary = make_dictionary()
+    for d in new_dictionary:
+        attemptUpper = decrypt(d.upper())
+        attemptLower = decrypt(d.lower())
+        if attemptUpper == 1:
+            input('The password is: ' + d.upper())
+            break
+        if attemptLower == 1:
+            input('The password is: ' + d.lower())
+            break
+        attempts+=2
+        if (attempts/1000).is_integer():
+            print('Please be patient, human. I have tried ' + str(attempts) + ' passwords.')
 
 #create a dictionary sorted by length 
 def make_dictionary():
@@ -51,17 +38,16 @@ def make_dictionary():
 
 def main():
     # Make dictionary
-    new_dictionary = make_dictionary()
+    
     #user encrypted text input
     encrypt_input = input("Enter your encrypted text: ")
     encrypt_input = encrypt_input.split(" ")
-    #start sub solving
-    candidates = []
-    solutions = backtracking(new_dictionary, candidates, encrypt_input, 0, [])
+
+    final = decrypt(encrypt_input)
     
     #print the results
-    print(len(solutions))
-    for s in solutions:
+    print(len(final))
+    for s in final:
         print(s)
 
 
